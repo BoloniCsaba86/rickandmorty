@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rick and Morty karakterek</title>
+    <style>
+        body {
+            background-color: darksalmon;
+        }
+        .small {
+            width: 150px;
+            height: 150px;
+            border: 1px solid black;
+        }
+        .large {
+            padding: 10px;            
+            border: 1px solid black;
+            background-color: white;
+        }
+        #current {
+            border-radius: 10px;
+            width: 300px;
+            height: 300px;
+            box-shadow: 0px 0px 5px;
+        }
+        #name {
+            margin: 0px;
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+        }
+        #con {
+            margin: 0px auto;
+            display: flex;
+            justify-content: space-between;
+            width: 650px;
+        }
+    </style>
+    <script>
+        let currentIndex = 1;
+
+        function katt(dir) {
+            console.log(currentIndex + dir);
+            currentIndex += dir;
+            if (currentIndex < 1) {
+                currentIndex = 826;
+            } else if (currentIndex > 826) {
+                currentIndex = 1;
+            }
+
+            let next = currentIndex + 1;
+            if (next > 826) {
+                next = 1;
+            }
+            let prev = currentIndex - 1;
+            if (prev < 1) {
+                prev = 826;
+            }
+
+            getImages(prev, currentIndex, next);
+        }
+
+        async function getImages(prev, current, next) {
+            let basePath = "https://rickandmortyapi.com/api/character/avatar/"
+            document.getElementById("prev").src = basePath + prev + ".jpeg";
+            document.getElementById("current").src = basePath + current  + ".jpeg";
+            document.getElementById("next").src = basePath + next + ".jpeg";
+            let resp = await fetch("https://rickandmortyapi.com/api/character/" + currentIndex)
+            let json = await resp.json();
+            document.getElementById("name").innerHTML = `${json.name} (#${current})`;
+        }
+    </script>
+</head>
+<body onload="getImages(826, 1, 2)">
+    <div id="con">
+        <img onclick="katt(-1)" class="small" id="prev" src="https://rickandmortyapi.com/api/character/avatar/1.jpeg">
+        <div class="large">
+            <img id="current" src="https://rickandmortyapi.com/api/character/avatar/2.jpeg">
+            <p id="name">Balázs Magor</p>
+        </div>
+        <img onclick="katt(1)" class="small" id="next" src="https://rickandmortyapi.com/api/character/avatar/3.jpeg">
+    </div>
+</body>
+</html>
